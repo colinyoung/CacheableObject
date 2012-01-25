@@ -1,7 +1,15 @@
 **cacheableobject**
 
 1. setup:
-   `#import "CacheableObject.h"`
+   
+        #import "CacheableObject.h"
+        
+        /* In your ApplicationDelegate: */
+        - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+          // ...
+          [ObjectCache cacheWithStoreType:ObjectCacheStoreTypeMemory];
+          //...
+        }
 
 1. usage:
 
