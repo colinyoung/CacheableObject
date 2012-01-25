@@ -1,13 +1,21 @@
-//
-//  CachedObject.h
-//  cloudbot-ios
-//
-//  Created by Colin Young on 1/25/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
-//
+/*
+ Don't use this or require it in your project. It's only used by the cache.
+*/
 
 #import <Foundation/Foundation.h>
 
-@interface CachedObject : NSObject
+@interface CachedObject : NSObject {
+    id _object;
+    NSDate *_expirationDate;
+}
+
+@property (nonatomic, retain) id object;
+@property (nonatomic, retain) NSDate *expirationDate;
+
++(CachedObject*)object:(NSObject*)_object expirationDate:(NSDate*)_expirationDate;
+-(id)initWithObject:(NSObject*)object expirationDate:(NSDate*)expirationDate;
+
+// Properties
+-(BOOL)isExpired;
 
 @end

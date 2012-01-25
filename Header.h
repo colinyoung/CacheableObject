@@ -1,14 +1,7 @@
-//
-//  Header.h
-//  cloudbot-ios
-//
-//  Created by Colin Young on 1/25/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
-//
+#ifndef CacheableObject_HEADER
+#define CacheableObject_HEADER 1
 
-#ifndef cloudbot_ios_Header_h
-#define cloudbot_ios_Header_h
-
-
+#import "NSObject+CacheableObject.h"
+#import "ObjectCache.h"
 
 #endif

@@ -1,13 +1,32 @@
-//
-//  ObjectCache.h
-//  cloudbot-ios
-//
-//  Created by Colin Young on 1/25/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
-//
-
 #import <Foundation/Foundation.h>
 
-@interface ObjectCache : NSObject
+typedef enum {
+    ObjectCacheStoreTypeMemory = 0,
+    ObjectCacheStoreTypeDisk,
+    // ObjectCacheStoreTypeSQLite // Not yet.
+} ObjectCacheStoreType;
+
+@interface ObjectCache : NSObject {
+    ObjectCacheStoreType _storeType;
+    
+    NSMutableDictionary *_memoryStore;
+}
+
+// Initialization
++(ObjectCache*)cacheWithStoreType:(ObjectCacheStoreType)storeType;
+-(id)initWithStoreType:(ObjectCacheStoreType)storeType;
+
+// Usage
++(ObjectCache*)sharedCache;
+
+// Get objects
+-(id)cachedObjectWithID:(NSString *)objectID;
+
+// Delete objects
+-(int)removeAll;
+-(int)removeExpired;
+
+// Properties
+-(ObjectCacheStoreType)storeType;
 
 @end
