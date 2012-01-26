@@ -25,6 +25,7 @@ typedef enum {
 // Delete objects
 -(int)removeAll;
 -(int)removeExpired;
+-(int)removeOldest:(int)numObjectsToRemove;
 
 // Properties
 -(ObjectCacheStoreType)storeType;

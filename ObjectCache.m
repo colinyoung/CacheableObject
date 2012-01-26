@@ -4,12 +4,14 @@
 static ObjectCache *sharedCache = nil;
 
 #define kDefaultObjectCacheStoreType ObjectCacheStoreTypeDisk
+#define kMemoryMaxObjects 10
 
 #pragma mark - Private methods
 @interface ObjectCache (Private)
 
 -(BOOL)cacheObject:(NSObject *)obj withID:(NSString *)ID untilExpirationDate:(NSDate*)expirationDate;
 -(NSMutableDictionary *)store;
+-(void)setupStore;
 
 @end
 
@@ -68,6 +70,8 @@ static ObjectCache *sharedCache = nil;
         return ct;
     }
 #warning Not implemented for other cache types
+    [self setupStore];    
+    
     return -1;
 }
 -(int)removeExpired {
@@ -82,6 +86,26 @@ static ObjectCache *sharedCache = nil;
             ct++;
         }
     }
+    
+    return ct;
+}
+
+-(int)removeOldest:(int)numObjectsToRemove {
+#warning Not implemented
+    int ct = [self removeExpired];
+    
+//  @todo
+//    NSMutableArray *values = [[[[self store] allValues] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+//        return [[(CachedObject*)obj2 expirationDate] compare:[(CachedObject*) obj1 expirationDate]];
+//    }] mutableCopy];
+//    
+//    int toRemove = MIN(numObjectsToRemove, [values count]-1);
+//    ct += toRemove;
+//    for (int i = 0; i < toRemove; i++)
+//        [values removeObject:[values objectAtIndex:i]];
+//
+    
+    [self removeAll];
     
     return ct;
 }
@@ -145,6 +169,11 @@ static ObjectCache *sharedCache = nil;
         
         if (_memoryStore == nil) _memoryStore = [[NSMutableDictionary alloc] init];
         
+        [self removeExpired];
+        if ([[_memoryStore allKeys] count] > kMemoryMaxObjects) {
+            [self removeOldest:kMemoryMaxObjects/3]; // @todo remove oldest first
+        }
+        
         [_memoryStore setObject:[CachedObject object:obj expirationDate:expirationDate] forKey:ID];
         
     } else
@@ -164,6 +193,15 @@ static ObjectCache *sharedCache = nil;
     if (_storeType == ObjectCacheStoreTypeMemory) { return _memoryStore; }
 #warning Not implemented for other cache types    
     return nil;
+}
+
+-(void)setupStore {
+#warning Not implemented for other cache types    
+    if (_storeType == ObjectCacheStoreTypeMemory) {
+        [_memoryStore release];
+        _memoryStore = nil; 
+        _memoryStore = [[NSMutableDictionary alloc] init]; 
+    }
 }
 
 @end
