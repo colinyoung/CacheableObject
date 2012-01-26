@@ -152,10 +152,10 @@ static ObjectCache *sharedCache = nil;
     // Disk cache
     if (_storeType == ObjectCacheStoreTypeDisk) {
         
-        @throw @"cacheObject:withID: not implemented for disk yet.";
+        [NSException raise:@"cacheObject:withID: not implemented for disk yet." format:nil];
         
     } else {
-        @throw @"Invalid Object Cache type.";
+        [NSException raise:@"Invalid Object Cache type." format:nil];
     }
     return YES;
 }

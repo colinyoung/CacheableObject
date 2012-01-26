@@ -26,7 +26,7 @@
 
 #pragma mark - Properties
 -(BOOL)isExpired {
-    return [_expirationDate timeIntervalSince1970] - [[NSDate date] timeIntervalSince1970] >= 0;
+    return [_expirationDate timeIntervalSince1970] - [[NSDate date] timeIntervalSince1970] < 0;
 }
 
 @end

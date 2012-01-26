@@ -1,15 +1,10 @@
 #import "NSObject+CacheableObject.h"
-#import "ObjectCache.h"
 
 #define kDefaultCacheInterval (60 * 60 * 24) // 24 hours
 
 // Fix some type warnings
 @interface __CacheWarningsFix : ObjectCache
 -(BOOL)cacheObject:(NSObject *)obj withID:(NSString *)ID untilExpirationDate:(NSDate*)expirationDate;
-@end
-
-@interface __ObjectWarningsFix : NSObject
--(NSString *)id;
 @end
 
 @implementation NSObject (CacheableObject)
@@ -25,9 +20,11 @@
 -(BOOL)cacheUntil:(NSDate*)expirationDate {
     __CacheWarningsFix *cache = (__CacheWarningsFix*)[ObjectCache sharedCache];
     if (![self respondsToSelector:@selector(id)]) {
-        @throw @"You must implement an -(NSString*)id on an object to cache it.";
+        NSString *exceptionStr = @"You must implement an -(NSString*)id on an object to cache it.";
+        NSLog(@"%@", exceptionStr);
+        [NSException raise:exceptionStr format:@"%@", exceptionStr];
     }
-    return (BOOL)[cache cacheObject:self withID:[(__ObjectWarningsFix*)self id] untilExpirationDate:expirationDate];
+    return (BOOL)[cache cacheObject:self withID:[(id <CacheableObject>)self id] untilExpirationDate:expirationDate];
 }
 
 @end

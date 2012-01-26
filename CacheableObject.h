@@ -3,5 +3,6 @@
 
 #import "NSObject+CacheableObject.h"
 #import "ObjectCache.h"
+#import "CacheableObject-p.h"
 
 #endif
