@@ -3,7 +3,7 @@
 
 static ObjectCache *sharedCache = nil;
 
-#define kDefaultObjectCacheStoreType ObjectCacheStoreTypeDisk
+#define kDefaultObjectCacheStoreType ObjectCacheStoreTypeMemory
 #define kMemoryMaxObjects 10
 
 #pragma mark - Private methods
