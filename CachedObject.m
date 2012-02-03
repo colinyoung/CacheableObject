@@ -6,7 +6,7 @@
 @synthesize expirationDate = _expirationDate;
 
 +(CachedObject*)object:(NSObject*)object expirationDate:(NSDate*)expirationDate {
-    return [[self alloc] initWithObject:object expirationDate:expirationDate];
+    return [[[self alloc] initWithObject:object expirationDate:expirationDate] autorelease];
 }
 
 -(id)initWithObject:(NSObject*)object expirationDate:(NSDate*)expirationDate {
