@@ -24,6 +24,12 @@
         NSLog(@"%@", exceptionStr);
         [NSException raise:exceptionStr format:@"%@", exceptionStr];
     }
+    
+    // Ensure id is valid
+    NSString *ID = [(id <CacheableObject>)self id];
+    if (ID.length == 0 || [ID rangeOfString:@"(null)"].location != NSNotFound)
+        return NO;
+    
     return (BOOL)[cache cacheObject:self withID:[(id <CacheableObject>)self id] untilExpirationDate:expirationDate];
 }
 
