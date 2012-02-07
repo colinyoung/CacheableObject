@@ -4,7 +4,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface CachedObject : NSObject {
+@interface CachedObject : NSObject <NSCoding> {
     id _object;
     NSDate *_expirationDate;
 }

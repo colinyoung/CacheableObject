@@ -29,4 +29,19 @@
     return [_expirationDate timeIntervalSince1970] - [[NSDate date] timeIntervalSince1970] < 0;
 }
 
+#pragma mark - NSCoding protocol
+-(id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super init];
+    if (self) {
+        self.object = [aDecoder decodeObjectForKey:@"object"];
+        self.expirationDate = [aDecoder decodeObjectForKey:@"expirationDate"];        
+    }
+    return self;
+}
+
+-(void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:self.object forKey:@"object"];
+    [aCoder encodeObject:self.expirationDate forKey:@"expirationDate"];    
+}
+
 @end

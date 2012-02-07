@@ -29,6 +29,7 @@ static ObjectCache *sharedCache = nil;
     self = [super init];
     if (self) {
         _storeType = storeType;
+        [self setupStore];
     }
     return self;
 }
