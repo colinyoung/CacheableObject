@@ -171,6 +171,10 @@ static ObjectCache *sharedCache = nil;
 #pragma mark - Set objects
 -(BOOL)cacheObject:(NSObject *)obj withID:(NSString *)ID untilExpirationDate:(NSDate*)expirationDate {
     
+    if ([expirationDate timeIntervalSince1970] < [[NSDate date] timeIntervalSince1970]) { 
+        return NO; /* The object has an expiration in the past. */
+    }
+    
     CachedObject *objectToCache = [CachedObject object:obj expirationDate:expirationDate];
     
     // Memcache
