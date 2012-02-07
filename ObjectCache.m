@@ -10,7 +10,7 @@ static ObjectCache *sharedCache = nil;
 @interface ObjectCache (Private)
 
 -(BOOL)cacheObject:(NSObject *)obj withID:(NSString *)ID untilExpirationDate:(NSDate*)expirationDate;
--(NSMutableDictionary *)store;
+-(id)store;
 -(void)setupStore;
 
 @end
@@ -69,13 +69,19 @@ static ObjectCache *sharedCache = nil;
         [_memoryStore release]; _memoryStore = nil;
         return ct;
     }
-#warning Not implemented for other cache types
-    [self setupStore];    
+    
+    if (_storeType == ObjectCacheStoreTypeSQLite) {
+        int ct = [_dbStore count];
+        [_dbStore dropDatabase];
+        [_dbStore createDatabase];
+        return ct;
+    }
+    
+    [self setupStore];
     
     return -1;
 }
 -(int)removeExpired {
-#warning Not implemented for other cache types
     int ct = 0;
     NSDictionary *allObjects = [self allObjects];
     
@@ -164,6 +170,8 @@ static ObjectCache *sharedCache = nil;
 #pragma mark - Set objects
 -(BOOL)cacheObject:(NSObject *)obj withID:(NSString *)ID untilExpirationDate:(NSDate*)expirationDate {
     
+    CachedObject *objectToCache = [CachedObject object:obj expirationDate:expirationDate];
+    
     // Memcache
     if (_storeType == ObjectCacheStoreTypeMemory) {
         
@@ -174,7 +182,7 @@ static ObjectCache *sharedCache = nil;
             [self removeOldest:kMemoryMaxObjects/3]; // @todo remove oldest first
         }
         
-        [_memoryStore setObject:[CachedObject object:obj expirationDate:expirationDate] forKey:ID];
+        [_memoryStore setObject:objectToCache forKey:ID];
         
     } else
     
@@ -183,24 +191,34 @@ static ObjectCache *sharedCache = nil;
         
         [NSException raise:@"cacheObject:withID: not implemented for disk yet." format:nil];
         
+    } else
+      
+    // Sqlite cache
+    if (_storeType == ObjectCacheStoreTypeSQLite) {
+    
+        [[self store] setValue:objectToCache forKey:ID];
+        
     } else {
         [NSException raise:@"Invalid Object Cache type." format:nil];
     }
     return YES;
 }
                               
--(NSMutableDictionary *)store {
+-(id)store {
     if (_storeType == ObjectCacheStoreTypeMemory) { return _memoryStore; }
-#warning Not implemented for other cache types    
+    if (_storeType == ObjectCacheStoreTypeSQLite) { return _dbStore; }    
     return nil;
 }
 
--(void)setupStore {
-#warning Not implemented for other cache types    
+-(void)setupStore {  
     if (_storeType == ObjectCacheStoreTypeMemory) {
         [_memoryStore release];
         _memoryStore = nil; 
         _memoryStore = [[NSMutableDictionary alloc] init]; 
+    }
+    
+    if (_storeType == ObjectCacheStoreTypeSQLite) {
+        _dbStore = [KVDB sharedDBUsingFile:@"ObjectCache.sqlite3"];
     }
 }
 

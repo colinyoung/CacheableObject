@@ -1,15 +1,17 @@
 #import <Foundation/Foundation.h>
+#import "kvdb.h"
 
 typedef enum {
     ObjectCacheStoreTypeMemory = 0,
     ObjectCacheStoreTypeDisk,
-    // ObjectCacheStoreTypeSQLite // Not yet.
+    ObjectCacheStoreTypeSQLite // Not yet.
 } ObjectCacheStoreType;
 
 @interface ObjectCache : NSObject {
     ObjectCacheStoreType _storeType;
     
     NSMutableDictionary *_memoryStore;
+    KVDB *_dbStore;
 }
 
 // Initialization
