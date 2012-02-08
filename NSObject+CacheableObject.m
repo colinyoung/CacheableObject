@@ -30,7 +30,7 @@
     if (ID.length == 0 || [ID rangeOfString:@"(null)"].location != NSNotFound)
         return NO;
     
-    return (BOOL)[cache cacheObject:self withID:[(id <CacheableObject>)self id] untilExpirationDate:expirationDate];
+    return (BOOL)[cache cacheObject:self withID:ID untilExpirationDate:expirationDate];
 }
 
 @end
