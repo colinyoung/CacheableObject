@@ -1,5 +1,6 @@
 #import "ObjectCache.h"
 #import "CachedObject.h"
+#import "NSThread+BlocksAdditions.h"
 
 static ObjectCache *sharedCache = nil;
 
@@ -171,8 +172,13 @@ static ObjectCache *sharedCache = nil;
 #pragma mark - Set objects
 -(BOOL)cacheObject:(NSObject *)obj withID:(NSString *)ID untilExpirationDate:(NSDate*)expirationDate {
     
+    // Ensure id is valid
+    if (ID.length == 0 || [ID rangeOfString:@"(null)"].location != NSNotFound)
+        return NO;
+    
+    /* Ensure the object doesn't have an expiration in the past. */
     if ([expirationDate timeIntervalSince1970] < [[NSDate date] timeIntervalSince1970]) { 
-        return NO; /* The object has an expiration in the past. */
+        return NO; 
     }
     
     CachedObject *objectToCache = [CachedObject object:obj expirationDate:expirationDate];
@@ -200,8 +206,9 @@ static ObjectCache *sharedCache = nil;
       
     // Sqlite cache
     if (_storeType == ObjectCacheStoreTypeSQLite) {
-    
-        [[self store] setValue:objectToCache forKey:ID];
+        [NSThread performBlockInBackground:^{
+            [[self store] setValue:objectToCache forKey:ID];
+        }];
         
     } else {
         [NSException raise:@"Invalid Object Cache type." format:nil];
