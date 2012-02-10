@@ -25,7 +25,6 @@
         [NSException raise:exceptionStr format:@"%@", exceptionStr];
     }
     
-    // Ensure id is valid
     NSString *ID = [(id <CacheableObject>)self id];
     return (BOOL)[cache cacheObject:self withID:ID untilExpirationDate:expirationDate];
 }
