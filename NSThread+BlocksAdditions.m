@@ -9,7 +9,11 @@
 
 + (void)ng_runBlock:(void (^)())block
 {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
 	block();
+    
+    [pool release];
 }
 
 @end
