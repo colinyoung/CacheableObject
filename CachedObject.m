@@ -24,6 +24,10 @@
     [super dealloc];
 }
 
+-(NSString *)index {
+    return [(id<CacheableObject>)_object index];
+}
+
 #pragma mark - Properties
 -(BOOL)isExpired {
     return [_expirationDate timeIntervalSince1970] - [[NSDate date] timeIntervalSince1970] < 0;

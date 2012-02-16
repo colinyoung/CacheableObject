@@ -15,6 +15,8 @@
 +(CachedObject*)object:(NSObject*)_object expirationDate:(NSDate*)_expirationDate;
 -(id)initWithObject:(NSObject*)object expirationDate:(NSDate*)expirationDate;
 
+-(NSString *)index;
+
 // Properties
 -(BOOL)isExpired;
 

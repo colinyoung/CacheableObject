@@ -23,6 +23,8 @@ typedef enum {
 
 // Get objects
 -(id)cachedObjectWithID:(NSString *)objectID;
+-(NSArray*)objectsMatchingSearch:(NSString*)search;
+-(id)firstResultForSearch:(NSString*)search;
 
 // Delete objects
 -(int)removeAll;

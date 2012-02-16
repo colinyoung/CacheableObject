@@ -60,7 +60,47 @@ static ObjectCache *sharedCache = nil;
     return nil;
 }
 
+-(NSArray*)objectsMatchingSearch:(NSString*)search {
+
+    if (_storeType == ObjectCacheStoreTypeMemory) {
+        
+        NSMutableArray *results = [NSMutableArray array];
+        for (CachedObject *object in [[self store] allObjects]) {
+            if ([[object index] rangeOfString:search options:NSCaseInsensitiveSearch].location != NSNotFound) {
+                [results addObject:object];
+            }
+        }
+        
+        return results;
+    }
+    
+    if (_storeType == ObjectCacheStoreTypeSQLite) {
+        
+        return [_dbStore objectsMatchingIndex:search];
+    }
+    
+    return nil;
+}
+
+-(id)firstResultForSearch:(NSString*)search {
+    
+    if (_storeType == ObjectCacheStoreTypeMemory) {
+        for (CachedObject *object in [[self store] allObjects]) {
+            if ([[object index] rangeOfString:search options:NSCaseInsensitiveSearch].location != NSNotFound) {
+                return object;
+            }
+        }
+    }
+    
+    if (_storeType == ObjectCacheStoreTypeSQLite) {
+        return [_dbStore firstObjectMatchingIndex:search];
+    }
+    
+    return nil;
+}
+
 -(NSDictionary *)allObjects {
+    if (_storeType == ObjectCacheStoreTypeSQLite) return [_dbStore allObjects];
     return [NSDictionary dictionaryWithDictionary:[self store]];
 }
 
@@ -170,7 +210,7 @@ static ObjectCache *sharedCache = nil;
 @implementation ObjectCache (Private)
 
 #pragma mark - Set objects
--(BOOL)cacheObject:(NSObject *)obj withID:(NSString *)ID untilExpirationDate:(NSDate*)expirationDate {
+-(BOOL)cacheObject:(id<CacheableObject>)obj withID:(NSString *)ID untilExpirationDate:(NSDate*)expirationDate {
     
     // Ensure id is valid
     if (ID.length == 0 || [ID rangeOfString:@"(null)"].location != NSNotFound)
