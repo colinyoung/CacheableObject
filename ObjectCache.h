@@ -20,6 +20,7 @@ typedef enum {
 
 // Usage
 +(ObjectCache*)sharedCache;
++(NSOperationQueue*)sharedOperationQueue;
 
 // Get objects
 -(id)cachedObjectWithID:(NSString *)objectID;

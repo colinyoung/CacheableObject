@@ -1,8 +1,8 @@
 #import "ObjectCache.h"
 #import "CachedObject.h"
-#import "NSThread+BlocksAdditions.h"
 
 static ObjectCache *sharedCache = nil;
+static NSOperationQueue *sharedOperationQueue = nil;
 
 #define kDefaultObjectCacheStoreType ObjectCacheStoreTypeMemory
 #define kMemoryMaxObjects 10
@@ -46,6 +46,18 @@ static ObjectCache *sharedCache = nil;
         sharedCache = [self cacheWithStoreType:kDefaultObjectCacheStoreType];
     });
     return sharedCache;
+}
+
++(NSOperationQueue*)sharedOperationQueue {
+    if (sharedOperationQueue != nil) {
+        return sharedOperationQueue;
+    }
+    
+    static dispatch_once_t pred; // Lock
+    dispatch_once(&pred, ^{ // This code is called at most once per app
+        sharedOperationQueue = [[NSOperationQueue alloc] init];
+    });
+    return sharedOperationQueue;
 }
 
 #pragma mark - Get objects
@@ -113,10 +125,13 @@ static ObjectCache *sharedCache = nil;
     }
     
     if (_storeType == ObjectCacheStoreTypeSQLite) {
-        int ct = [_dbStore count];
-        [_dbStore dropDatabase];
-        [_dbStore createDatabase];
-        return ct;
+        
+        [[[self class] sharedOperationQueue] cancelAllOperations];
+        [[[self class] sharedOperationQueue] addOperationWithBlock:^{
+            [_dbStore dropDatabase];
+            [_dbStore createDatabase];
+        }];
+        return 0;
     }
     
     [self setupStore];
@@ -246,7 +261,8 @@ static ObjectCache *sharedCache = nil;
       
     // Sqlite cache
     if (_storeType == ObjectCacheStoreTypeSQLite) {
-        [NSThread performBlockInBackground:^{
+        
+        [[[self class] sharedOperationQueue] addOperationWithBlock:^{
             [[self store] setValue:objectToCache forKey:ID];
         }];
         
