@@ -1,4 +1,6 @@
 #import "NSObject+CacheableObject.h"
+#import "ObjectCache.h"
+#import "CacheableObject-p.h"
 
 #define kDefaultCacheInterval (60 * 60 * 24) // 24 hours
 

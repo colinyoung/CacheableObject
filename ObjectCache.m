@@ -1,5 +1,6 @@
 #import "ObjectCache.h"
 #import "CachedObject.h"
+#import "CacheableObject-p.h"
 
 static ObjectCache *sharedCache = nil;
 static NSOperationQueue *sharedOperationQueue = nil;
