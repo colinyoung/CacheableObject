@@ -1,6 +1,7 @@
 #import "NSObject+CacheableObject.h"
 
 #define kDefaultCacheInterval (60 * 60 * 24) // 24 hours
+#define kFarFutureCacheInterval (kDefaultCacheInterval * 365 * 10) // 10 years
 
 // Fix some type warnings
 @interface __CacheWarningsFix : ObjectCache
@@ -15,6 +16,10 @@
 
 -(BOOL)cacheFor:(NSTimeInterval)timeInterval {
     return [self cacheUntil:[NSDate dateWithTimeIntervalSinceNow:timeInterval]];
+}
+
+-(BOOL)cacheForever {
+    return [self cacheFor:kFarFutureCacheInterval];
 }
 
 -(BOOL)cacheUntil:(NSDate*)expirationDate {
