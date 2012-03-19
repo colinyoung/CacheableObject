@@ -1,4 +1,5 @@
 #import "CachedObject.h"
+#import "CacheableObject-p.h"
 
 @implementation CachedObject
 
